@@ -16,9 +16,7 @@ def get_stock_prices():
     max_year = args.get("max_year")
     ndaq, corn, gasoline, dates = get_stocks.get_stock_data(min_year, max_year)
     return {"labels_dates": dates, "ndaq_data": ndaq, "corn_data": corn, "gasoline_data": gasoline}
-    # return render_template("graph.html", labels=labels, ndaq=ndaq,corn=corn, gasoline=gasoline,
-    # estimated_ndaq = estimated_ndaq,estimated_corn = estimated_corn, estimated_gasoline = estimated_gasoline)
-
+    
 
 @app.route('/expected')
 def expected_prices():
