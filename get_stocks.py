@@ -15,12 +15,20 @@ def divide(x, y):
     return x / y
 
 
-def get_initial_data():
+def get_stock_data(start, end):
     stock_market = DataRetrieval(["NDAQ", "CORN", "UGA"])
-    nvidia = stock_market.download_data(True, "Close", start="2011-1-1", end=None)
+    nvidia = stock_market.download_data(True, "Close", start=start + "-1-1", end=end + "-1-1")
     ndaq = nvidia.iloc[:, 1]
     corn = nvidia.iloc[:, 0]
     gasoline = nvidia.iloc[:, 2]
+
+    return ndaq.values.tolist(), corn.values.tolist(), gasoline.values.tolist(), \
+           list(nvidia.axes[0].strftime('%m-%d-%Y'))
+
+
+def get_expected_prices(start, end, period):
+    stock_market = DataRetrieval(["NDAQ", "CORN", "UGA"])
+    nvidia = stock_market.download_data(True, "Close", start=start, end=end, period=period)
 
     # Estimation NASDAQ
     data_nasdaq = pd.Series(nvidia.NDAQ).tail(90)
@@ -34,28 +42,5 @@ def get_initial_data():
     data_gasoline = pd.Series(nvidia.UGA).tail(90)
     estimated_gasoline = estimation_gasoline(data_gasoline)
 
-    return ndaq.values.tolist(), corn.values.tolist(), gasoline.values.tolist(), \
-           list(nvidia.axes[0].strftime('%m-%d-%Y')), estimated_ndaq, estimated_corn, str(estimated_gasoline)
-
-
-def get_custom_data():
-    stock_market = DataRetrieval(["NDAQ", "CORN", "UGA"])
-    nvidia = stock_market.download_data(True, "Close", start="2015" + "-1-1", end="2017" + "-1-1")
-    ndaq = nvidia.iloc[:, 1]
-    corn = nvidia.iloc[:, 0]
-    gasoline = nvidia.iloc[:, 2]
-
-    # Estimation NASDAQ
-    data_nasdaq = pd.Series(nvidia.NDAQ).tail(90)
-    estimated_ndaq = estimation_ndaq(data_nasdaq)
-
-    # Estimation Corn
-    data_corn = pd.Series(nvidia.CORN).tail(90)
-    estimated_corn = estimation_corn(data_corn)
-
-    # Estimation Gasoline
-    data_gasoline = pd.Series(nvidia.UGA).tail(90)
-    estimated_gasoline = estimation_gasoline(data_gasoline)
-
-    return ndaq.values.tolist(), corn.values.tolist(), gasoline.values.tolist(), \
-           list(nvidia.axes[0].strftime('%m-%d-%Y')), estimated_ndaq, estimated_corn, str(estimated_gasoline)
+    return round(estimated_ndaq.tolist()[0], 2), round(estimated_corn.tolist()[0], 2), round(
+        estimated_gasoline.tolist()[0], 2)

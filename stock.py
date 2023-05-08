@@ -1,33 +1,32 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, request
+from flask_cors import CORS, cross_origin
 import get_stocks
 
 app = Flask(__name__)
 
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route('/')
-def index():
-    # get the data
-    ndaq, corn, gasoline, dates, estimated_ndaq, estimated_corn, estimated_gasoline = get_stocks.get_initial_data()
 
-    #labels = dates[:]
-    #ndaq = ndaq[-10:]
-    #corn = corn[-10:]
-    #gasoline = gasoline[-10:]
-
+@app.route('/search', methods=['GET'])
+@cross_origin()
+def get_stock_prices():
+    args = request.args
+    min_year = args.get("min_year")
+    max_year = args.get("max_year")
+    ndaq, corn, gasoline, dates = get_stocks.get_stock_data(min_year, max_year)
     return {"labels_dates": dates, "ndaq_data": ndaq, "corn_data": corn, "gasoline_data": gasoline}
     # return render_template("graph.html", labels=labels, ndaq=ndaq,corn=corn, gasoline=gasoline,
-    #                       estimated_ndaq = estimated_ndaq,estimated_corn = estimated_corn, estimated_gasoline = estimated_gasoline)
+    # estimated_ndaq = estimated_ndaq,estimated_corn = estimated_corn, estimated_gasoline = estimated_gasoline)
 
 
-@app.route('/specific')
-def custom_data():
-    ndaq, corn, gasoline, dates, estimated_ndaq, estimated_corn, estimated_gasoline = get_stocks.get_custom_data()
-    #labels = dates[:]
-    #ndaq = ndaq[-10:]
-    # = corn[-10:]
-    #gasoline = gasoline[-10:]
-    return {"labels_dates": dates, "ndaq_data": ndaq, "corn_data": corn, "gasoline_data": gasoline}
+@app.route('/expected')
+def expected_prices():
+    estimated_ndaq, estimated_corn, estimated_gasoline = get_stocks.get_expected_prices(start=None, end=None,
+                                                                                        period="3mo")
+    return {"estimated_ndaq": estimated_ndaq, "estimated_corn": estimated_corn,
+            "estimated_gasoline": estimated_gasoline}
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int("3000"), debug=True)
+    app.run(host="0.0.0.0", port=int("3000"))
