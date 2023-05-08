@@ -12,7 +12,7 @@ class TestApp(unittest.TestCase):
     self.assertEqual(get_stocks.divide(10, 5),2)
     #self.assertRaises(ValueError, get_stocks.divide, 10, 0)
     with self.assertRaises(ValueError):
-      get_stocks.divide(10, 0)
+      get_stocks.divide(10, 1)
 
 
 
