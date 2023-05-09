@@ -1,3 +1,5 @@
+import sys
+
 from flask import Flask, request
 from flask_cors import CORS, cross_origin
 import get_stocks
@@ -15,6 +17,7 @@ def get_stock_prices():
     min_year = args.get("min_year")
     max_year = args.get("max_year")
     ndaq, corn, gasoline, dates = get_stocks.get_stock_data(min_year, max_year)
+    #print(dates[0].split('-')[2], file=sys.stderr)
     return {"labels_dates": dates, "ndaq_data": ndaq, "corn_data": corn, "gasoline_data": gasoline}
     
 
@@ -27,4 +30,4 @@ def expected_prices():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int("3000"))
+    app.run(host="0.0.0.0", port=int("5000"))
