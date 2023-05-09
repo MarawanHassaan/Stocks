@@ -1,3 +1,5 @@
+import sys
+
 import yfinance as yahooFinance
 import pandas as pd
 from model_price_prediction import *
@@ -5,20 +7,12 @@ from download_data import *
 from price_prediction import *
 
 
-def add(x, y):
-    return x + y
-
-
-def divide(x, y):
-    if y == 0:
-        raise ValueError('Can not divide by zero')
-    return x / y
-
-
 def get_stock_data(start, end):
     stock_market = DataRetrieval(["NDAQ", "CORN", "UGA"])
     nvidia = stock_market.download_data(True, "Close", start=start + "-1-1", end=end + "-1-1")
     ndaq = nvidia.iloc[:, 1]
+    #print(ndaq, file=sys.stderr)
+
     corn = nvidia.iloc[:, 0]
     gasoline = nvidia.iloc[:, 2]
 
