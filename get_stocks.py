@@ -9,7 +9,7 @@ from price_prediction import *
 
 def get_stock_data(start, end):
     stock_market = DataRetrieval(["NDAQ", "CORN", "UGA"])
-    nvidia = stock_market.download_data(True, "Close", start=start + "-1-1", end=end + "-1-1")
+    nvidia = stock_market.download_data(True, "Close", start=start + "-1-1", end=end + "-12-31")
     ndaq = nvidia.iloc[:, 1]
     # print(ndaq, file=sys.stderr)
 
