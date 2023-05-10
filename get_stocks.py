@@ -11,7 +11,7 @@ def get_stock_data(start, end):
     stock_market = DataRetrieval(["NDAQ", "CORN", "UGA"])
     nvidia = stock_market.download_data(True, "Close", start=start + "-1-1", end=end + "-1-1")
     ndaq = nvidia.iloc[:, 1]
-    #print(ndaq, file=sys.stderr)
+    # print(ndaq, file=sys.stderr)
 
     corn = nvidia.iloc[:, 0]
     gasoline = nvidia.iloc[:, 2]
@@ -27,14 +27,28 @@ def get_expected_prices(start, end, period):
     # Estimation NASDAQ
     data_nasdaq = pd.Series(nvidia.NDAQ).tail(90)
     estimated_ndaq = estimation_ndaq(data_nasdaq)
-
+    today_nasdaq_price = [x for x in pd.Series(nvidia.NDAQ).tail(1)]
+    if estimated_ndaq > today_nasdaq_price:
+        up_down_nasdaq = "G"
+    else:
+        up_down_nasdaq = "R"
     # Estimation Corn
     data_corn = pd.Series(nvidia.CORN).tail(90)
     estimated_corn = estimation_corn(data_corn)
+    today_corn_price = [x for x in pd.Series(nvidia.CORN).tail(1)]
+    if estimated_corn > today_corn_price:
+        up_down_corn = "G"
+    else:
+        up_down_corn = "R"
 
     # Estimation Gasoline
     data_gasoline = pd.Series(nvidia.UGA).tail(90)
     estimated_gasoline = estimation_gasoline(data_gasoline)
+    today_gasoline_price = [x for x in pd.Series(nvidia.UGA).tail(1)]
+    if estimated_gasoline > today_gasoline_price:
+        up_down_gasoline = "G"
+    else:
+        up_down_gasoline = "R"
 
     return round(estimated_ndaq.tolist()[0], 2), round(estimated_corn.tolist()[0], 2), round(
-        estimated_gasoline.tolist()[0], 2)
+        estimated_gasoline.tolist()[0], 2), up_down_nasdaq, up_down_corn, up_down_gasoline
