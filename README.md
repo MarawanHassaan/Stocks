@@ -1,4 +1,4 @@
-# Stock Market - Backend
+# Stock Market - Backend 2
 
 ## Overview
 This project is designed to download the stock prices from Yahoo Finance given a period of time.
